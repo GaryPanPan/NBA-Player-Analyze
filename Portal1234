@@ -1,0 +1,88 @@
+##Team Avg Height
+import pandas as pd
+df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
+
+df['height_m'] = df['height'].apply(lambda x: float(x[-4:]))
+
+print(df[['full_name','team','height_m']].groupby('team')['height_m'].mean().sort_values(ascending=False).head(5))
+
+print(df[['full_name','team','height_m']].groupby('team')['height_m'].mean().sort_values(ascending=False).tail(5))
+
+
+
+
+## Top Ten Player
+import pandas as pd
+
+df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
+
+def age(s):
+    if s > 20:
+        return(120 - s)
+    else:
+        return(20 - s)
+
+df['age'] = df['b_day'].apply(lambda x: age(int(x[-2:])))
+
+
+print(df[['full_name','team','rating','b_day','age']].sort_values('rating',ascending=False).head(10))
+
+
+
+
+## University of Top 100 Player and Their Distributed
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
+
+
+df2 = df[['full_name','team','rating','b_day','college']].sort_values('rating',ascending=False).head(100)
+
+print(df2.groupby('college')['rating'].agg(['count','mean','max','min']).sort_values('count',ascending=False))
+
+
+df2.groupby('college')['rating'].count().sort_values(ascending=False).head(10).plot(kind='bar')
+
+plt.show()
+
+
+
+
+## Num of Player in First Round, Second Round and Undrafted
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
+
+def draft_name(i):
+    if i == '1':
+        return('First round')
+    elif i == '2':
+        return('Second second')
+    else:
+        return('undrafted')
+    
+df['peak_round'] = df['draft_round'].apply(lambda x: draft_name(x))
+
+print(df.groupby('peak_round')['peak_round'].count())
+df.groupby('peak_round')['peak_round'].count().plot(kind='pie')
+
+plt.show()
+
+
+
+## Top 5 Salary Player in Each Position 
+import pandas as pd
+
+df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
+
+df['salary_num'] = df['salary'].apply(lambda x: float(x[1:]))
+
+position_value = list(set(df['position']))
+
+for i in position_value:
+    print("===== The top 5 salary in position: {} =====".format(i))
+    print(df[df['position'] == i].sort_values('salary_num',ascending=False).head(5)[['full_name','team','position','salary_num']])
+    print("--------------------------------------------------------")
+    
