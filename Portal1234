@@ -42,7 +42,7 @@ df2 = df[['full_name','team','rating','b_day','college']].sort_values('rating',a
 print(df2.groupby('college')['rating'].agg(['count','mean','max','min']).sort_values('count',ascending=False))
 
 
-df2.groupby('college')['rating'].count().sort_values(ascending=False).head(10).plot(kind='bar')
+df2.groupby('college')['rating'].count().sort_values(ascending=False).head(10).plot(kind ='barh',color = 'blue').invert_yaxis()
 
 plt.show()
 
@@ -66,14 +66,16 @@ def draft_name(i):
 df['peak_round'] = df['draft_round'].apply(lambda x: draft_name(x))
 
 print(df.groupby('peak_round')['peak_round'].count())
-df.groupby('peak_round')['peak_round'].count().plot(kind='pie')
+df.groupby('peak_round')['peak_round'].count().plot(kind='pie',autopct = '%.1f%%',title = 'peak_round distribution')
 
 plt.show()
 
 
 
+
 ## Top 5 Salary Player in Each Position 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("C:\\Data Programming\\Final Project\\nba2k-full.csv")
 
@@ -85,4 +87,31 @@ for i in position_value:
     print("===== The top 5 salary in position: {} =====".format(i))
     print(df[df['position'] == i].sort_values('salary_num',ascending=False).head(5)[['full_name','team','position','salary_num']])
     print("--------------------------------------------------------")
-    
+
+
+df['salary_num'] = df['salary'].apply(lambda x: float(x[1:]))
+
+fig = plt.figure()
+ax1 = fig.add_subplot(311)
+ax2 = fig.add_subplot(312)
+ax3 = fig.add_subplot(313)
+df[df['position'] == 'C'].sort_values('salary_num',ascending=False).head(5)[['full_name','salary_num']].plot(kind='barh',x='full_name', ax = ax1,subplots=True, legend=False)
+df[df['position'] == 'G'].sort_values('salary_num',ascending=False).head(5)[['full_name','salary_num']].plot(kind='barh',x='full_name', ax = ax2,subplots=True, legend=False, color = 'orange')
+df[df['position'] == 'F'].sort_values('salary_num',ascending=False).head(5)[['full_name','salary_num']].plot(kind='barh',x='full_name', ax = ax3,subplots=True, legend=False, color = 'green')
+ax1.title.set_text('Position: C')
+ax1.set_ylabel('')
+ax2.title.set_text('Position: G')
+ax2.set_ylabel('')
+ax3.title.set_text('Position: F')
+ax3.set_ylabel('')
+ax1.set_xlim([20000000, 42500000])
+ax2.set_xlim([20000000, 42500000])
+ax3.set_xlim([20000000, 42500000])
+plt.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.9, 
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=1)
+plt.show()
+
